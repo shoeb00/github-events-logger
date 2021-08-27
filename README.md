@@ -1,2 +1,7 @@
 # github_logger
-Logs pull, push and merge requests to mongoDB
+
+Create a simple webserver to listen
+Connect to github webhook with localserver using ngrok
+Add webhook to any repo to listen to
+Select the events or select 'Send me everything'
+Save pull requests, push requtests and merge requests to MongoDB
