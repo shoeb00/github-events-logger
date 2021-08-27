@@ -1,0 +1,9 @@
+<ul>
+    {% for item in cur %}
+    <li>
+        <label>
+            <span>  TITLE:  {{item.title}}  <br>  HREF:  {{item.link}}  <br>  DATE:  {{item.time}} <br>  TEXT:  {{item.text}}  </span>
+        </label>
+    </li>
+    {% endfor %}
+</ul>

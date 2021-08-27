@@ -1,11 +1,12 @@
+import json
+
 from flask import Flask
-from flask.wrappers import Request
-from flask import json
 from flask import request
 from flask_pymongo import PyMongo
 
-
 app = Flask(__name__)
+
+MAX_RECORD_LIMIT = 20
 
 try:
     mongodb_client = PyMongo(app, uri="mongodb://localhost:27017/myDatabase")
@@ -15,11 +16,6 @@ try:
 
 except Exception as e:
     print('error connecting to the DB', e)
-
-
-@app.route('/')
-def root():
-    return 'working...'
 
 
 @app.route('/github', methods=['POST'])
@@ -32,6 +28,23 @@ def index():
             k = collection.insert_one(message)
             print(k)
         return str(res)
+
+
+@app.route('/actions', methods=['GET'])
+def root():
+    page = request.args.get('page', default=1, type=int)
+    lastId = request.args.get('id', default="", type=str)
+    query = {}
+    if page == 0 and lastId != "":
+        query = {"_id": {"$gt": lastId}}
+    if page != 0 and lastId != "":
+        query = {"_id": {"$lt": lastId}}
+
+    data = []
+    for i in collection.find(query).limit(MAX_RECORD_LIMIT):
+        data.append(i)
+
+    return json.dumps(data)
 
 
 def extract(data):
@@ -67,7 +80,7 @@ def pull_request(data):
     to_branch = data['pull_request']['base']['ref']
     created_time = data['pull_request']['created_at']
     updated_at = data['pull_request']['updated_at']
-    message = '"' + author + '" submitted a pull request from "' + from_branch +\
+    message = '"' + author + '" submitted a pull request from "' + from_branch + \
               '" to "' + to_branch + '" on ' + created_time
     action = {'pull_request': message}
     return action
