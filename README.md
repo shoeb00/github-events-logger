@@ -1,6 +1,6 @@
 # Github logger
 
-A simple webserver listens that listens to github actions for a selected repository and stores the events in structured logs in MongoDB.
+A simple webserver that listens to github actions for a selected repository and stores the events in structured logs in MongoDB.
 
 <br/>
 
